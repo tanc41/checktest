@@ -11,4 +11,5 @@ btn.addEventListener("click", function(){
     tg.MainButton.setText("Сообщение отправлено!");
     tg.MainButton.show();
     tg.sendData("Привет Андрей");
+    tg.answerWebAppQuery("HELLO")
 });

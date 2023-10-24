@@ -98,6 +98,7 @@
 </div>
             <div class="form-group">
                 <button class="button" type="submit">Заказать</button>
+                <script src="app1.js"></script>
             </div>
         </form>
     </div>
@@ -123,48 +124,6 @@
             quantityValue.value = quantityRange.value;
         });
     </script>
-    <script>
-        const orderForm = document.getElementById("orderForm");
-
-        orderForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Предотвратить стандартное поведение отправки формы
-
-            // Получение данных из формы
-            const category = document.getElementById("category").value;
-            const service = document.getElementById("service").value;
-            const type = document.getElementById("type").value;
-            const link = document.getElementById("link").value;
-            const quantity = document.getElementById("quantity").value;
-
-            // Создание объекта для отправки на сервер
-            const formData = {
-                category,
-                service,
-                type,
-                link,
-                quantity
-            };
-
-            // Отправка данных на сервер с использованием Fetch API
-            fetch("/your-server-endpoint", {
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Данные успешно отправлены на сервер:", data);
-                // Вы можете добавить дополнительную обработку ответа сервера здесь
-            })
-            .catch(error => {
-                console.error("Ошибка отправки данных на сервер:", error);
-                // Обработка ошибки
-            });
-        });
-    </script>
-
 <script>
 const quantityRange = document.getElementById("quantity");
 const quantityValue = document.getElementById("quantityValue");

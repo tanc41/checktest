@@ -5,7 +5,11 @@ tg.expand();
 tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "#FF00FF";
 
- tg.MainButton.setText("Сообщение отправлено!");
-    tg.MainButton.show();
-    tg.sendData("43545");
+let btn = document.getElementById("btn");
 
+btn.addEventListener("click", function(){
+    tg.MainButton.setText("Сообщение отправлено!");
+    tg.MainButton.show();
+    tg.sendData("Привет Андрей");
+    tg.answerWebAppQuery("HELLO")
+});

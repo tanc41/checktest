@@ -14,8 +14,7 @@ btn.addEventListener("click", function(){
     tg.answerWebAppQuery("HELLO")
 });
 
-    document.getElementById('order-form').addEventListener('submit', function (event) {
-      event.preventDefault(); 
+    document.getElementById('order-form').addEventListener('submit', function () {
 
       var category = document.getElementById('category').value;
       var service = document.getElementById('service').value;

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group select, .form-group input[type="text"], .form-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Форма заказа услуги</h2>
+        <form id="orderForm">
+            <div class="form-group">
+                <label for="category">Выберите категорию услуги:</label>
+                <select id="category" name="category">
+                    <option value="category1">Категория 1</option>
+                    <option value="category2">Категория 2</option>
+                    <option value="category3">Категория 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="service">Выберите услугу:</label>
+                <select id="service" name="service">
+                    <option value="service1">Услуга 1</option>
+                    <option value="service2">Услуга 2</option>
+                    <option value="service3">Услуга 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Тип услуги:</label>
+                <select id="type" name="type">
+                    <option value="type1">Тип 1</option>
+                    <option value="type2">Тип 2</option>
+                    <option value="type3">Тип 3</option>
+                </select>
+            </div>
+            <div class="form-group" id="link-group">
+                <label for="link">Ссылка на услугу:</label>
+                <input type="text" id="link" name="link" required>
+            </div>
+<div class="form-group">
+    <label for="quantity">Количество:</label>
+    <input type="range" id="quantity" name="quantity" min="10" max="100" step="1" value="1">
+    <input type="text" id="quantityValue" name="quantityValue">
+</div>
+            <div class="form-group">
+                <button class="button" type="submit">Заказать</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const categorySelect = document.getElementById("category");
+        const serviceSelect = document.getElementById("service");
+        const typeSelect = document.getElementById("type");
+        const linkGroup = document.getElementById("link-group");
+
+        categorySelect.addEventListener("change", () => {
+            linkGroup.style.display = "block";
+        });
+
+        serviceSelect.addEventListener("change", () => {
+            linkGroup.style display = "block";
+        });
+
+        const quantityRange = document.getElementById("quantity");
+        const quantityValue = document.getElementById("quantityValue");
+
+        quantityRange.addEventListener("input", () => {
+            quantityValue.value = quantityRange.value;
+        });
+    </script>
+    <script>
+        const orderForm = document.getElementById("orderForm");
+
+        orderForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Предотвратить стандартное поведение отправки формы
+
+            // Получение данных из формы
+            const category = document.getElementById("category").value;
+            const service = document.getElementById("service").value;
+            const type = document.getElementById("type").value;
+            const link = document.getElementById("link").value;
+            const quantity = document.getElementById("quantity").value;
+
+            // Создание объекта для отправки на сервер
+            const formData = {
+                category,
+                service,
+                type,
+                link,
+                quantity
+            };
+
+            // Отправка данных на сервер с использованием Fetch API
+            fetch("/your-server-endpoint", {
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Данные успешно отправлены на сервер:", data);
+                // Вы можете добавить дополнительную обработку ответа сервера здесь
+            })
+            .catch(error => {
+                console.error("Ошибка отправки данных на сервер:", error);
+                // Обработка ошибки
+            });
+        });
+    </script>
+
+<script>
+const quantityRange = document.getElementById("quantity");
+const quantityValue = document.getElementById("quantityValue");
+
+quantityRange.addEventListener("input", () => {
+    quantityValue.value = quantityRange.value;
+});
+
+</script>
+
+</body>
+</html>

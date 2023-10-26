@@ -30,6 +30,7 @@ btn.addEventListener("click", function(){
         link: link,
         quantity: quantity
       };
+        console.log(formData)
             tg.MainButton.setText("Сообщение отправлено!");
     tg.MainButton.show();
     tg.sendData(formData);

@@ -103,26 +103,5 @@
             quantityValue.value = quantityRange.value;
         });
     </script>
-<script>
-    document.getElementById('order-form').addEventListener('submit', function (event) {
-      event.preventDefault(); // Предотвращаем отправку формы по умолчанию
-
-      // Получение значений полей
-      var category = document.getElementById('category').value;
-      var service = document.getElementById('service').value;
-      var type = document.getElementById('type').value;
-      var link = document.getElementById('link').value;
-      var quantity = document.getElementById('quantity').value;
-
-      // Создаем объект, чтобы передать данные на сервер (вам нужно настроить этот запрос)
-      var formData = {
-        category: category,
-        service: service,
-        type: type,
-        link: link,
-        quantity: quantity
-      };
-    });
-  </script>
 </body>
 </html>

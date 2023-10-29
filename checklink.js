@@ -1,4 +1,11 @@
-    document.getElementById('order-form').addEventListener('submit', function (event) {
+let tg = window.Telegram.WebApp;
+
+tg.expand();
+
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#FF00FF";
+
+document.getElementById('order-form').addEventListener('submit', function (event) {
         event.preventDefault();
 
 

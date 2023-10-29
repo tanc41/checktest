@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+  <title>Форма с проверкой ссылки и отправкой данных на сервер</title>
+  <meta charset="UTF-8">
+
+</head>
+<body>
+<form id="myForm" onsubmit="return checkLink()">
+  <label for="category">Категория:</label>
+  <select id="category" name="category">
+    <option value="1">Категория 1</option>
+    <option value="2">Категория 2</option>
+    <option value="3">Категория 3</option>
+  </select>
+  <br><br>
+  <label for="type">Тип:</label>
+  <select id="type" name="type">
+    <option value="1">Тип 1</option>
+    <option value="2">Тип 2</option>
+    <option value="3">Тип 3</option>
+  </select>
+  <br><br>
+  <label for="link">Ссылка:</label>
+  <input type="text" id="link" name="link">
+  <br><br>
+  <input type="submit" value="Отправить" onclick="submitForm()">
+</form>
+
+<script>
+  let tg = window.Telegram.WebApp;
+
+tg.expand();
+
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#FF00FF";
+  
+var links = {
+  "1": {
+    "1": "https://vk.com/",
+    "2": "https://t.me/"
+  },
+  "2": {
+    "1": "https://vk.com/",
+    "2": "https://t.me/"
+  },
+  "3": {
+    "1": "https://vk.com/",
+    "2": "https://t.me/"
+  }
+};
+
+function checkLink() {
+  var link = document.getElementById("link").value;
+  var category = document.getElementById("category").value;
+  var type = document.getElementById("type").value;
+
+  if (link.startsWith(links[category][type])) {
+      var formData = {
+        category: category,
+        service: "346",
+        type: type,
+        link: link,
+        quantity: "4"
+      };
+        console.log(formData)
+            tg.MainButton.setText("Сообщение отправлено!");
+    tg.MainButton.show();
+    tg.sendData(JSON.stringify(formData));
+    return true;
+  } else {
+    alert("Ссылка не допустима.");
+    return false;
+  }
+}
+</script>
+</body>
+</html>

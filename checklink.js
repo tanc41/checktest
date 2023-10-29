@@ -8,14 +8,9 @@ tg.MainButton.color = "#FF00FF";
 document.getElementById('order-form').addEventListener('submit', function (event) {
         event.preventDefault();
 
-
-
-
-
         var allowedDomains = {
             "category1-type1": ["https://vk.com/"],
             "category2-type2": ["https://t.me/"],
-            // Добавьте другие комбинации категории и типа, если необходимо.
         };
 
         function validateLink() {
@@ -56,10 +51,10 @@ document.getElementById('order-form').addEventListener('submit', function (event
     tg.sendData(JSON.stringify(formData));
 
                     alert("Данные успешно отправлены на сервер.");
-                    return false; // Отменить отправку формы
+                    return false; 
                 } else {
                     alert("Недопустимая ссылка.");
-                    return false; // Отменить отправку формы.
+                    return false; 
                 }
 
     });

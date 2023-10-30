@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+    <style>
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group select, .form-group input[type="text"], .form-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Форма заказа услуги</h2>
+        <form id="order-form">
+            <div class="form-group">
+                <label for="category">Выберите категорию услуги:</label>
+                <select id="category" name="category">
+                    <option value="category1">Категория 1</option>
+                    <option value="category2">Категория 2</option>
+                    <option value="category3">Категория 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="service">Выберите услугу:</label>
+                <select id="service" name="service">
+                    <option value="service1">Услуга 1</option>
+                    <option value="service2">Услуга 2</option>
+                    <option value="service3">Услуга 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Тип услуги:</label>
+                <select id="type" name="type">
+                    <option value="type1">Тип 1</option>
+                    <option value="type2">Тип 2</option>
+                    <option value="type3">Тип 3</option>
+                </select>
+            </div>
+            <div class="form-group" id="link-group">
+                <label for="link">Ссылка на услугу:</label>
+                <input type="text" id="link" name="link">
+            </div>
+<p id="result"></p>
+            <div class="form-group">
+                <label for="quantity">Количество:</label>
+                <input type="range" id="quantity" name="quantity" min="1" max="10" step="1" value="1">
+                <input type="text" id="quantityValue" name="quantityValue" value="1" readonly>
+            </div>
+            <div class="form-group">
+                <button class="button" type="submit">Заказать</button>
+                      <button class="submit" id="btn">Отправить</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+      let tg = window.Telegram.WebApp;
+
+tg.expand();
+
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#FF00FF";
+        const categorySelect = document.getElementById("category");
+        const serviceSelect = document.getElementById("service");
+        const typeSelect = document.getElementById("type");
+        const linkGroup = document.getElementById("link-group");
+
+        categorySelect.addEventListener("change", () => {
+            linkGroup.style.display = "block";
+        });
+
+        serviceSelect.addEventListener("change", () => {
+            linkGroup.style.display = "block";
+        });
+
+        const quantityRange = document.getElementById("quantity");
+        const quantityValue = document.getElementById("quantityValue");
+
+        quantityRange.addEventListener("input", () => {
+            quantityValue.value = quantityRange.value;
+        });
+
+        document.getElementById("order-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Отменяет стандартное действие отправки формы
+
+            // Получение выбранных значений категории, типа и введенной ссылки
+            var category = document.getElementById("category").value;
+            var type = document.getElementById("type").value;
+            var url = document.getElementById("link").value;
+
+            // Вызов функции для проверки ссылки
+            var isUrlValid = checkUrlValidity(category, type, url);
+
+            // Отображение результата проверки
+            var resultElement = document.getElementById("result");
+            if (isUrlValid) {
+                resultElement.innerHTML = "Ссылка допустима. Отправка данных на сервер...";
+
+                // Отправка данных на сервер
+                sendDataToServer(category, type, url);
+            } else {
+                resultElement.innerHTML = "Ссылка не допустима для выбранной категории и типа.";
+            }
+        });
+        // Объект с правилами проверки
+        var urlRules = {
+            "category1-type1": ["https://vk.com/p", "https://example.com"],
+            "category1-type2": ["https://t.me", "https://example2.com"],
+            "категория2-тип1": ["https://example3.com"],
+            // Добавьте дополнительные правила здесь
+        };
+
+        // Функция для проверки допустимости ссылки
+        function checkUrlValidity(category, type, url) {
+            var ruleKey = category + "-" + type;
+            if (urlRules[ruleKey]) {
+                return urlRules[ruleKey].includes(url);
+            }
+
+            // По умолчанию считаем ссылку недопустимой
+            return false;
+        }
+              function sendDataToServer(category, type, url) {
+
+                      var formData = {
+        category: category,
+        service: service,
+        type: type,
+        link: link,
+        quantity: "1"
+      };
+            tg.MainButton.setText("Сообщение отправлено!");
+    tg.MainButton.show();
+    tg.sendData(JSON.stringify(formData));
+
+        }
+    </script>
+</body>
+</html>

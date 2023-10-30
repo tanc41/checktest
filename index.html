@@ -67,12 +67,12 @@
             </div>
             <div class="form-group" id="link-group">
                 <label for="link">Ссылка на услугу:</label>
-                <input type="text" id="link" name="link">
+                <input type="text" id="link" name="link" required>
             </div>
 <p id="result"></p>
             <div class="form-group">
                 <label for="quantity">Количество:</label>
-                <input type="range" id="quantity" name="quantity" min="1" max="10" step="1" value="1">
+                <input type="range" id="quantity" name="quantity" min="1" max="100" step="1" value="1">
                 <input type="text" id="quantityValue" name="quantityValue" value="1" readonly>
             </div>
             <div class="form-group">
@@ -113,12 +113,14 @@ tg.MainButton.color = "#FF00FF";
             event.preventDefault(); // Отменяет стандартное действие отправки формы
 
             // Получение выбранных значений категории, типа и введенной ссылки
-            var category = document.getElementById("category").value;
-            var type = document.getElementById("type").value;
-            var url = document.getElementById("link").value;
+      var category = document.getElementById('category').value;
+      var service = document.getElementById('service').value;
+      var type = document.getElementById('type').value;
+      var link = document.getElementById('link').value;
+      var quantity = document.getElementById('quantity').value;
 
             // Вызов функции для проверки ссылки
-            var isUrlValid = checkUrlValidity(category, type, url);
+            var isUrlValid = checkUrlValidity(category, type, link);
 
             // Отображение результата проверки
             var resultElement = document.getElementById("result");
@@ -126,7 +128,7 @@ tg.MainButton.color = "#FF00FF";
                 resultElement.innerHTML = "Ссылка допустима. Отправка данных на сервер...";
 
                 // Отправка данных на сервер
-                sendDataToServer(category, type, url);
+                sendDataToServer(category, service, type, link, quantity);
             } else {
                 resultElement.innerHTML = "Ссылка не допустима для выбранной категории и типа.";
             }
@@ -135,28 +137,28 @@ tg.MainButton.color = "#FF00FF";
         var urlRules = {
             "category1-type1": ["https://vk.com/p", "https://example.com"],
             "category1-type2": ["https://t.me", "https://example2.com"],
-            "категория2-тип1": ["https://example3.com"],
+            "category2-type1": ["https://example3.com"],
             // Добавьте дополнительные правила здесь
         };
 
         // Функция для проверки допустимости ссылки
-        function checkUrlValidity(category, type, url) {
+        function checkUrlValidity(category, type, link) {
             var ruleKey = category + "-" + type;
             if (urlRules[ruleKey]) {
-                return urlRules[ruleKey].includes(url);
+                return urlRules[ruleKey].includes(link);
             }
 
             // По умолчанию считаем ссылку недопустимой
             return false;
         }
-              function sendDataToServer(category, type, url) {
+              function sendDataToServer(category, service, type, link, quantity) {
 
-                      var formData = {
+      var formData = {
         category: category,
         service: service,
         type: type,
         link: link,
-        quantity: "1"
+        quantity: quantity
       };
             tg.MainButton.setText("Сообщение отправлено!");
     tg.MainButton.show();

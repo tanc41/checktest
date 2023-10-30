@@ -145,7 +145,13 @@ tg.MainButton.color = "#FF00FF";
         function checkUrlValidity(category, type, link) {
             var ruleKey = category + "-" + type;
             if (urlRules[ruleKey]) {
-                return urlRules[ruleKey].includes(link);
+                var rules = urlRules[ruleKey];
+
+                for (var i = 0; i < rules.length; i++) {
+                    if (url.includes(rules[i])) {
+                        return true;
+                    }
+                }
             }
 
             // По умолчанию считаем ссылку недопустимой

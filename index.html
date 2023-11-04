@@ -192,6 +192,12 @@ function updateTypeOptions() {
     }
 
     function sendDataToServer(categoryId, service, type) {
+          let tg = window.Telegram.WebApp;
+
+tg.expand();
+
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#FF00FF";
       const link = document.getElementById("link").value;
       const quantity = document.getElementById("quantity").value;
 

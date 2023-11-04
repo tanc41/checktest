@@ -160,6 +160,12 @@
       updateSelectOptions(typeSelect, []);
       linkGroup.style.display = "block";
     }
+        const quantityRange = document.getElementById("quantity");
+        const quantityValue = document.getElementById("quantityValue");
+
+        quantityRange.addEventListener("input", () => {
+            quantityValue.value = quantityRange.value;
+        });
 
 function updateTypeOptions() {
   const selectedCategoryId = categorySelect.value;

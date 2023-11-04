@@ -37,11 +37,7 @@
         }
     </style>
 </head>
-<body>
-  const tg = window.Telegram.WebApp;
-
-tg.expand();
-  
+<body>  
   <div class="container">
     <h2>Форма заказа услуги</h2>
     <form id="order-form">
@@ -78,6 +74,10 @@ tg.expand();
   </div>
 
   <script>
+const tg = window.Telegram.WebApp;
+
+tg.expand();
+    
     const categoriesData = {
       "category1": {
         name: "Категория 1",

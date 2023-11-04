@@ -38,6 +38,10 @@
     </style>
 </head>
 <body>
+  const tg = window.Telegram.WebApp;
+
+tg.expand();
+  
   <div class="container">
     <h2>Форма заказа услуги</h2>
     <form id="order-form">
@@ -202,10 +206,6 @@ function updateTypeOptions() {
     }
 
     function sendDataToServer(categoryId, service, type) {
-          let tg = window.Telegram.WebApp;
-
-tg.expand();
-
 tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "#FF00FF";
       const link = document.getElementById("link").value;

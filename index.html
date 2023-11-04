@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+<style>
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group select, .form-group input[type="text"], .form-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Форма заказа услуги</h2>
+    <form id="order-form">
+      <div class="form-group">
+        <label for="category">Выберите категорию услуги:</label>
+        <select id="category" name="category"></select>
+      </div>
+      <div class="form-group">
+        <label for="service">Выберите услугу:</label>
+        <select id="service" name="service"></select>
+      </div>
+      <div class="form-group">
+        <label for="type">Тип услуги:</label>
+        <select id="type" name="type"></select>
+      </div>
+      <div class="form-group" id="link-group">
+        <label for="link">Ссылка на услугу:</label>
+        <input type="text" id="link" name="link" required>
+      </div>
+      <p id="result"></p>
+      <div class="form-group">
+        <label for="quantity">Количество:</label>
+        <input type="range" id="quantity" name="quantity" min="1" max="100" step="1" value="1">
+        <input type="text" id="quantityValue" name="quantityValue" value="1" readonly>
+      </div>
+      <div class="form-group">
+        <button class="button" type="submit">Заказать</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const categoriesData = {
+      "category1": {
+        name: "Категория 1",
+        services: [
+          {
+            value: "service1",
+            label: "Услуга 1",
+            types: [
+              { value: "type1", label: "Тип 1" },
+              { value: "type2", label: "Тип 2" },
+              { value: "type3", label: "Тип 3" },
+            ],
+          },
+          {
+            value: "service2",
+            label: "Услуга 2",
+            types: [
+              { value: "type4", label: "Тип 4" },
+              { value: "type5", label: "Тип 5" },
+              { value: "type6", label: "Тип 6" },
+            ],
+          },
+          {
+            value: "service3",
+            label: "Услуга 3",
+            types: [
+              { value: "type7", label: "Тип 7" },
+              { value: "type8", label: "Тип 8" },
+              { value: "type9", label: "Тип 9" },
+            ],
+          },
+        ],
+      },
+      "category2": {
+        name: "Категория 2",
+        services: [
+          {
+            value: "service4",
+            label: "Услуга 4",
+            types: [
+              { value: "type10", label: "Тип 10" },
+              { value: "type11", label: "Тип 11" },
+              { value: "type12", label: "Тип 12" },
+            ],
+          },
+          {
+            value: "service5",
+            label: "Услуга 5",
+            types: [
+              { value: "type13", label: "Тип 13" },
+              { value: "type14", label: "Тип 14" },
+              { value: "type15", label: "Тип 15" },
+            ],
+          },
+          {
+            value: "service6",
+            label: "Услуга 6",
+            types: [
+              { value: "type16", label: "Тип 16" },
+              { value: "type17", label: "Тип 17" },
+              { value: "type18", label: "Тип 18" },
+            ],
+          },
+        ],
+      },
+    };
+
+    const categorySelect = document.getElementById("category");
+    const serviceSelect = document.getElementById("service");
+    const typeSelect = document.getElementById("type");
+    const linkGroup = document.getElementById("link-group");
+
+    for (const categoryId in categoriesData) {
+      const option = document.createElement("option");
+      option.value = categoryId;
+      option.textContent = categoriesData[categoryId].name;
+      categorySelect.appendChild(option);
+    }
+
+    categorySelect.addEventListener("change", updateServiceOptions);
+    serviceSelect.addEventListener("change", updateTypeOptions);
+    typeSelect.addEventListener("change", () => linkGroup.style.display = "block");
+
+    function updateServiceOptions() {
+      const selectedCategoryId = categorySelect.value;
+      const selectedCategory = categoriesData[selectedCategoryId];
+      updateSelectOptions(serviceSelect, selectedCategory.services);
+      updateSelectOptions(typeSelect, []);
+      linkGroup.style.display = "block";
+    }
+
+function updateTypeOptions() {
+  const selectedCategoryId = categorySelect.value;
+  const selectedServiceValue = serviceSelect.value;
+  const selectedCategory = categoriesData[selectedCategoryId];
+
+  if (selectedCategory) {
+    const selectedService = selectedCategory.services.find(
+      (service) => service.value === selectedServiceValue
+    );
+
+    if (selectedService) {
+      updateSelectOptions(typeSelect, selectedService.types);
+      return;
+    }
+  }
+
+  // Если выбранная категория или услуга не найдены, очистите список типов.
+  updateSelectOptions(typeSelect, []);
+}
+
+    function updateSelectOptions(selectElement, options) {
+      selectElement.innerHTML = "";
+      options.forEach((option) => {
+        const optionElement = document.createElement("option");
+        optionElement.value = option.value;
+        optionElement.textContent = option.label;
+        selectElement.appendChild(optionElement);
+      });
+    }
+
+    function sendDataToServer(categoryId, service, type) {
+      const link = document.getElementById("link").value;
+      const quantity = document.getElementById("quantity").value;
+
+      const isUrlValid = checkUrlValidity(categoryId, service, type, link);
+      const resultElement = document.getElementById("result");
+
+      if (isUrlValid) {
+        resultElement.innerHTML = "Ссылка допустима. Отправка данных на сервер...";
+        tg.MainButton.setText("Сообщение отправлено!");
+        tg.MainButton.show();
+
+        const formData = {
+          category: categoriesData[categoryId].name,
+          service: service,
+          type: type,
+          link: link,
+          quantity: quantity,
+        };
+
+        tg.sendData(JSON.stringify(formData));
+      } else {
+        resultElement.innerHTML =
+          "Ссылка не допустима для выбранной категории, услуги и типа.";
+      }
+    }
+
+    const urlRules = {
+      "category1-service1-type1": ["https://vk.com/", "https://example.com"],
+      "category1-service1-type2": ["https://t.me/", "https://example2.com"],
+      "category2-service4-type4": ["https://example3.com"],
+"category2-service6-type16": ["https://eгxample3.com"],
+      // Добавьте дополнительные правила здесь для других комбинаций
+    };
+
+    function checkUrlValidity(categoryId, service, type, link) {
+      const ruleKey = `${categoryId}-${service}-${type}`;
+      if (urlRules[ruleKey]) {
+        const rules = urlRules[ruleKey];
+
+        for (const rule of rules) {
+          if (link.includes(rule)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    // Добавляем обработчик события submit формы
+    document.getElementById("order-form").addEventListener("submit", function (event) {
+      event.preventDefault(); // Отменяет стандартное действие отправки формы
+      const categoryId = categorySelect.value;
+      const service = serviceSelect.value;
+      const type = typeSelect.value;
+      sendDataToServer(categoryId, service, type);
+    });
+
+    // Инициализация формы при загрузке страницы
+    updateServiceOptions();
+  </script>
+</body>
+</html>

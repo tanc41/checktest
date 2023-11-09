@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+<style>
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .form-group select, .form-group input[type="text"], .form-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>  
+  <div class="container">
+    <h2>Форма заказа услуги</h2>
+    <form id="order-form">
+      <div class="form-group">
+        <label for="category">Выберите категорию услуги:</label>
+        <select id="category" name="category">
+          <option value="" disabled selected>Выберите...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="service">Выберите услугу:</label>
+        <select id="service" name="service">
+          <option value="" disabled selected>Выберите...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="type">Тип услуги:</label>
+        <select id="type" name="type"></select>
+      </div>
+      <div class="form-group" id="description-group" style="display: none;">
+        <label for="description">Описание услуги:</label>
+        <p id="description"></p>
+      </div>
+      <div class="form-group" id="link-group">
+        <label for="link">Ссылка на услугу:</label>
+        <input type="text" id="link" name="link" required>
+      </div>
+      <p id="result"></p>
+      <div class="form-group">
+        <label for="quantity">Количество:</label>
+        <input type="range" id="quantity" name="quantity" min="1" max="100" step="1" value="1">
+        <input type="text" id="quantityValue" name="quantityValue" value="1" readonly>
+      </div>
+      <div class="form-group">
+        <button class="button" type="submit">Заказать</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+const tg = window.Telegram.WebApp;
+
+tg.expand();
+    
+const categoriesData = {
+  "category1": {
+    name: "Категория 1",
+    services: [
+      {
+        value: "service1",
+        label: "Услуга 1",
+        types: [
+          {
+            value: "type1",
+            label: "Тип 1",
+            description: "<b>Описание Типа 1 для Услуги 1 в Категории 1.</b>",
+            rules: ["https://vk.com/", "https://example.com"],
+          },
+          {
+            value: "type2",
+            label: "Тип 2",
+            description: "Описание Типа 2 для Услуги 1 в Категории 1.",
+            rules: ["https://t.me/", "https://example2.com"],
+          },
+          // ... (другие типы)
+        ],
+      },
+      // ... (другие услуги)
+    ],
+  },
+  "category2": {
+    name: "Категория 2",
+    services: [
+      {
+        value: "service4",
+        label: "Услуга 4",
+        types: [
+          {
+            value: "type10",
+            label: "Тип 10",
+            description: "Описание Типа 10 для Услуги 4 в Категории 2.",
+            rules: ["https://example3.com"],
+          },
+          {
+            value: "type11",
+            label: "Тип 11",
+            description: "Описание Типа 11 для Услуги 4 в Категории 2.",
+            rules: ["https://example4.com"],
+          },
+          // ... (другие типы)
+        ],
+      },
+      // ... (другие услуги)
+    ],
+  },
+};
+
+
+    const categorySelect = document.getElementById("category");
+    const serviceSelect = document.getElementById("service");
+    const typeSelect = document.getElementById("type");
+const descriptionGroup = document.getElementById("description-group");
+const descriptionElement = document.getElementById("description");
+    const linkGroup = document.getElementById("link-group");
+
+    for (const categoryId in categoriesData) {
+      const option = document.createElement("option");
+      option.value = categoryId;
+      option.textContent = categoriesData[categoryId].name;
+      categorySelect.appendChild(option);
+    }
+
+    categorySelect.addEventListener("change", updateServiceOptions);
+    serviceSelect.addEventListener("change", updateTypeOptions);
+typeSelect.addEventListener("change", updateDescription);
+    typeSelect.addEventListener("change", () => linkGroup.style.display = "block");
+
+    function updateServiceOptions() {
+      const selectedCategoryId = categorySelect.value;
+      const selectedCategory = categoriesData[selectedCategoryId];
+      updateSelectOptions(serviceSelect, selectedCategory.services);
+      updateSelectOptions(typeSelect, []);
+updateDescription();
+      linkGroup.style.display = "block";
+    }
+        const quantityRange = document.getElementById("quantity");
+        const quantityValue = document.getElementById("quantityValue");
+
+        quantityRange.addEventListener("input", () => {
+            quantityValue.value = quantityRange.value;
+        });
+
+function updateTypeOptions() {
+  const selectedCategoryId = categorySelect.value;
+  const selectedServiceValue = serviceSelect.value;
+  const selectedCategory = categoriesData[selectedCategoryId];
+
+  if (selectedCategory) {
+    const selectedService = selectedCategory.services.find(
+      (service) => service.value === selectedServiceValue
+    );
+
+    if (selectedService) {
+      updateSelectOptions(typeSelect, selectedService.types);
+updateDescription();
+      return;
+    }
+  }
+
+  // Если выбранная категория или услуга не найдены, очистите список типов.
+  updateSelectOptions(typeSelect, []);
+updateDescription();
+}
+
+    function updateDescription() {
+      const selectedCategoryId = categorySelect.value;
+      const selectedServiceValue = serviceSelect.value;
+      const selectedTypeValue = typeSelect.value;
+      const selectedCategory = categoriesData[selectedCategoryId];
+
+      if (selectedCategory) {
+        const selectedService = selectedCategory.services.find(
+          (service) => service.value === selectedServiceValue
+        );
+
+        if (selectedService) {
+          const selectedType = selectedService.types.find(
+            (type) => type.value === selectedTypeValue
+          );
+
+          if (selectedType) {
+            descriptionElement.textContent = selectedType.description;
+            descriptionGroup.style.display = "block";
+            return;
+          }
+        }
+      }
+
+      descriptionGroup.style.display = "none";
+    }
+
+    function updateSelectOptions(selectElement, options) {
+      selectElement.innerHTML = "";
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Выберите...";
+      selectElement.appendChild(defaultOption);
+
+      options.forEach((option) => {
+        const optionElement = document.createElement("option");
+        optionElement.value = option.value;
+        optionElement.textContent = option.label;
+        selectElement.appendChild(optionElement);
+      });
+    }
+
+    function sendDataToServer(categoryId, service, type) {
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#FF00FF";
+      const link = document.getElementById("link").value;
+      const quantity = document.getElementById("quantity").value;
+
+      const isUrlValid = checkUrlValidity(categoryId, service, type, link);
+      const resultElement = document.getElementById("result");
+
+      if (isUrlValid) {
+        resultElement.innerHTML = "Ссылка допустима. Отправка данных на сервер...";
+        tg.MainButton.setText("Сообщение отправлено!");
+        tg.MainButton.show();
+
+        const formData = {
+          category: categoriesData[categoryId].name,
+          service: service,
+          type: type,
+          link: link,
+          quantity: quantity,
+        };
+
+        tg.sendData(JSON.stringify(formData));
+      } else {
+        resultElement.innerHTML =
+          "Ссылка не допустима для выбранной категории, услуги и типа.";
+      }
+    }
+
+function checkUrlValidity(categoryId, service, type, link) {
+  const selectedCategory = categoriesData[categoryId];
+
+  if (selectedCategory) {
+    const selectedService = selectedCategory.services.find(
+      (s) => s.value === service
+    );
+
+    if (selectedService) {
+      const selectedType = selectedService.types.find(
+        (t) => t.value === type
+      );
+
+      if (selectedType) {
+        const rules = selectedType.rules;
+
+        for (const rule of rules) {
+          if (link.includes(rule)) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+
+    // Добавляем обработчик события submit формы
+    document.getElementById("order-form").addEventListener("submit", function (event) {
+      event.preventDefault(); // Отменяет стандартное действие отправки формы
+      const categoryId = categorySelect.value;
+      const service = serviceSelect.value;
+      const type = typeSelect.value;
+      sendDataToServer(categoryId, service, type);
+    });
+
+    // Инициализация формы при загрузке страницы
+    updateServiceOptions();
+  </script>
+</body>
+</html>

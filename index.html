@@ -384,13 +384,20 @@ tg.MainButton.color = "#FF00FF";
         resultElement.innerHTML = "Ссылка допустима. Отправка данных на сервер...";
         tg.MainButton.setText("Сообщение отправлено!");
         tg.MainButton.show();
+        const selectedCategory = categoriesData[categoryId];
+        const selectedService = selectedCategory.services.find(s => s.value === service);
+        const selectedType = selectedService.types.find(t => t.value === type);
+
 
         const formData = {
-          category: categoriesData[categoryId].name,
-          service: service,
-          type: type,
-          link: link,
-          quantity: quantity,
+            categoryId: categoriesData[categoryId].name,
+            categoryLabel: selectedCategory.name,
+            service: service,
+            serviceLabel: selectedService.label,
+            type: type,
+            typeLabel: selectedType.label,
+            link: link,
+            quantity: quantity,
         };
 
         tg.sendData(JSON.stringify(formData));

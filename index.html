@@ -398,6 +398,8 @@ tg.MainButton.color = "#FF00FF";
             typeLabel: selectedType.label,
             link: link,
             quantity: quantity,
+          price: selectedType.price * quantity
+          
         };
 
         tg.sendData(JSON.stringify(formData));

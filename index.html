@@ -71,7 +71,7 @@ margin-bottom: 5px;
       <p id="result"></p>
 <div class="form-group">
   <label for="quantity">Количество (min <span id="quantityMin">1</span>, max <span id="quantityMax">100</span>):</label>
-  <input type="range" id="quantity" name="quantity" min="1" max="1000" step="1" value="1">
+  <input type="range" id="quantity" name="quantity" min="1" max="50000" step="10" value="1">
   <input type="text" id="quantityValue" name="quantityValue" value="1" readonly>
 </div>
             <div class="form-group">
@@ -91,20 +91,31 @@ tg.expand();
     
 const categoriesData = {
   "category1": {
-    name: "Категория 1",
+    name: "📨 Telegram",
     services: [
       {
         value: "service1",
-        label: "Услуга 1",
+        label: "👤 Подписчики",
         types: [
           {
-            value: "54676",
-            label: "Тип 1",
-            description: "Описание <strong>жирным</strong> текстом для Услуги 1 в Категории 1.<br>Этот текст перенесен на новую строку.",
-            rules: ["https://vk.com/", "https://example.com"],
-price: 10,
-minQuantity: 5,
- maxQuantity: 20,
+            value: "529",
+            label: "👤 Подписчики (Без отписок)",
+            description: `📨 Telegram подписчики без отписок
+<br>🤵‍♀ Качество: MIX аккаунты из разных стран, часть RU<br>
+🛡 Гарантия<br>
+⌛️ Запуск услуги: до 2 часов<br>
+🚀 Скорость: до 5000-20000 в сутки<br>
+🔻 Списания: в рамках погрешности до 5% в течение 30 дней<br><br>
+🔗 Указывать ссылку на канал/группу<br>
+Пример:<br>
+https://t.me/CHANNELNAME<br><br>
+▫️ Возможна накрутка на приватные каналы!<br>
+▫️ Без списаний - отсутствие списаний в течение 30 дней<br>
+▫️ Заказы на каналы 18+ могут быть отменены`,
+            rules: ["https://t.me/"],
+price: 0.23,
+minQuantity: 500,
+ maxQuantity: 50000,
           },
           {
             value: "type2",

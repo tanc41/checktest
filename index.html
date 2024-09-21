@@ -940,6 +940,7 @@ tg.MainButton.color = "#FF00FF";
         };
 
         tg.sendData(JSON.stringify(formData));
+        tg.close()
       } else {
         resultElement.innerHTML =
           "Ссылка не допустима для выбранной категории, услуги и типа.";
